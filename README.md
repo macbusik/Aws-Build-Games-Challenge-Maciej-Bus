@@ -18,8 +18,9 @@ This project is part of the AWS Build Games Challenge, where developers build cl
 ## Controls
 
 - **Left/Right arrows**: Move pieces horizontally
-- **Down arrow**: Soft drop (faster fall)
-- **Up arrow or Spacebar**: Rotate pieces
+- **Down arrow**: Soft drop (faster fall + 1 point per cell)
+- **Up arrow**: Rotate pieces
+- **Spacebar**: Hard drop (instant drop + 2 points per cell)
 - **Close window**: Quit game
 
 ## Setup

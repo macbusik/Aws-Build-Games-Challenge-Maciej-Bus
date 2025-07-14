@@ -235,6 +235,41 @@ class Tetris:
             # Award soft drop points (NES Tetris style)
             self.score += Scoring.SOFT_DROP
     
+    def hard_drop(self):
+        """Hard drop piece to bottom and award points"""
+        try:
+            drop_distance = 0
+            # Drop piece as far as possible
+            while self.valid_move(self.current_piece, self.piece_x, self.piece_y + 1):
+                self.piece_y += 1
+                drop_distance += 1
+            
+            # Award points for hard drop (2 points per cell in NES Tetris)
+            hard_drop_points = drop_distance * Scoring.HARD_DROP
+            self.score += hard_drop_points
+            
+            # Log hard drop if significant distance
+            if drop_distance > 0:
+                logger.debug(f"Hard drop: {drop_distance} cells, {hard_drop_points} points")
+            
+            # Immediately place the piece since it can't fall further
+            self.place_piece()
+            self.clear_lines()
+            
+            # Generate new piece and check for game over (same logic as update method)
+            self.new_piece()
+            self.piece_x, self.piece_y = SPAWN_X, SPAWN_Y
+            
+            # Check game over (same logic as existing code)
+            if not self.valid_move(self.current_piece, self.piece_x, self.piece_y):
+                logger.info(f"Game Over! Final Score: {self.score}, Level: {self.level}, Lines: {self.lines_cleared}")
+                self.reset_game()
+            
+        except Exception as e:
+            logger.error(f"Error in hard_drop: {e}")
+            # Fallback to regular drop behavior
+            self.drop()
+    
     def draw(self, screen):
         """Draw the game state to screen with NES Tetris colors"""
         try:
@@ -364,8 +399,10 @@ def main():
                                 game.move(1)
                             elif event.key == pygame.K_DOWN:
                                 game.drop()
-                            elif event.key == pygame.K_UP or event.key == pygame.K_SPACE:
+                            elif event.key == pygame.K_UP:
                                 game.rotate()
+                            elif event.key == pygame.K_SPACE:
+                                game.hard_drop()
                         except Exception as e:
                             logger.error(f"Error handling input: {e}")
                 

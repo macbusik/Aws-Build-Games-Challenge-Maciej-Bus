@@ -263,6 +263,27 @@ class TestTetrisScoringSystem(unittest.TestCase):
             self.game.drop()
             self.assertEqual(self.game.score, initial_score + Scoring.SOFT_DROP)
     
+    def test_hard_drop_functionality(self):
+        """Test hard drop moves piece to bottom and awards points"""
+        game = Tetris()
+        initial_score = game.score
+        initial_piece_count = game.total_pieces
+        
+        # Hard drop should place piece and generate new one
+        game.hard_drop()
+        
+        # Should have generated a new piece (total_pieces increases)
+        self.assertEqual(game.total_pieces, initial_piece_count + 1, 
+                        "Hard drop should place piece and generate new one")
+        
+        # Score should increase (hard drop points + any line clear bonuses)
+        self.assertGreater(game.score, initial_score, 
+                          "Hard drop should award points")
+    
+    def test_hard_drop_scoring_constant(self):
+        """Test hard drop scoring constant is defined"""
+        self.assertEqual(Scoring.HARD_DROP, 2, "Hard drop should award 2 points per cell")
+    
     def test_fall_speed_changes_with_level(self):
         """Test that fall speed decreases with level"""
         level_0_speed = self.game.get_fall_speed()

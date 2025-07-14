@@ -30,6 +30,9 @@ class Scoring:
     # Soft drop points
     SOFT_DROP = 1    # Per cell dropped
     
+    # Hard drop points  
+    HARD_DROP = 2    # Per cell hard dropped (space bar)
+    
     # Level progression
     LINES_PER_LEVEL = 10
     MAX_LEVEL = 29
