@@ -55,6 +55,7 @@ class Tetris:
             pygame.font.init()
             self.font = pygame.font.Font(None, 24)
             self.big_font = pygame.font.Font(None, 36)
+            self.small_font = pygame.font.Font(None, 18)
             
             logger.info("Tetris game initialized successfully")
         except Exception as e:
@@ -316,6 +317,9 @@ class Tetris:
             # Draw scoring information
             self.draw_score_info(screen)
             
+            # Draw how to play instructions
+            self.draw_how_to_play(screen)
+            
         except Exception as e:
             logger.error(f"Error in draw method: {e}")
             # Continue execution, don't crash the game
@@ -375,6 +379,55 @@ class Tetris:
             
         except Exception as e:
             logger.error(f"Error drawing score info: {e}")
+    
+    def draw_how_to_play(self, screen):
+        """Draw how to play instructions on the left side"""
+        try:
+            # Position how-to-play info on the left side
+            help_x = 10
+            help_y = GRID_HEIGHT * BLOCK_SIZE + 20
+            
+            # Title
+            title_text = self.font.render("HOW TO PLAY", True, Colors.YELLOW)
+            screen.blit(title_text, (help_x, help_y))
+            
+            # Controls section
+            controls_y = help_y + 30
+            controls_title = self.small_font.render("CONTROLS:", True, Colors.WHITE)
+            screen.blit(controls_title, (help_x, controls_y))
+            
+            # Control instructions
+            controls = [
+                "← → Move pieces",
+                "↑ Rotate pieces", 
+                "↓ Soft drop (+1pt/cell)",
+                "SPACE Hard drop (+2pt/cell)",
+            ]
+            
+            for i, control in enumerate(controls):
+                control_text = self.small_font.render(control, True, Colors.LIGHT_GRAY)
+                screen.blit(control_text, (help_x, controls_y + 20 + (i * 16)))
+            
+            # Scoring section
+            scoring_y = controls_y + 20 + (len(controls) * 16) + 10
+            scoring_title = self.small_font.render("SCORING:", True, Colors.WHITE)
+            screen.blit(scoring_title, (help_x, scoring_y))
+            
+            # Scoring instructions
+            scoring = [
+                "1 line = 40 × (level+1)",
+                "2 lines = 100 × (level+1)",
+                "3 lines = 300 × (level+1)", 
+                "4 lines = 1200 × (level+1) TETRIS!",
+                "Level up every 10 lines"
+            ]
+            
+            for i, score in enumerate(scoring):
+                score_text = self.small_font.render(score, True, Colors.LIGHT_GRAY)
+                screen.blit(score_text, (help_x, scoring_y + 20 + (i * 16)))
+                
+        except Exception as e:
+            logger.error(f"Error drawing how to play: {e}")
 
 def main():
     """Main game loop with error handling"""

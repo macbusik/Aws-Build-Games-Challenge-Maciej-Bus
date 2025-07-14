@@ -409,6 +409,33 @@ class TestPiecesModule(unittest.TestCase):
             self.assertIn(i, PIECE_BORDER_COLORS, f"Missing border color mapping for piece {i}")
 
 
+class TestTetrisUI(unittest.TestCase):
+    """Test UI and display functionality"""
+    
+    def setUp(self):
+        """Set up test game instance"""
+        self.game = Tetris()
+    
+    def test_font_initialization(self):
+        """Test that all fonts are properly initialized"""
+        self.assertIsNotNone(self.game.font, "Main font should be initialized")
+        self.assertIsNotNone(self.game.big_font, "Big font should be initialized")
+        self.assertIsNotNone(self.game.small_font, "Small font should be initialized")
+    
+    def test_draw_methods_exist(self):
+        """Test that all draw methods exist and are callable"""
+        self.assertTrue(hasattr(self.game, 'draw'), "draw method should exist")
+        self.assertTrue(hasattr(self.game, 'draw_score_info'), "draw_score_info method should exist")
+        self.assertTrue(hasattr(self.game, 'draw_how_to_play'), "draw_how_to_play method should exist")
+        self.assertTrue(hasattr(self.game, 'draw_grid_lines'), "draw_grid_lines method should exist")
+        
+        # Test that methods are callable
+        self.assertTrue(callable(self.game.draw), "draw should be callable")
+        self.assertTrue(callable(self.game.draw_score_info), "draw_score_info should be callable")
+        self.assertTrue(callable(self.game.draw_how_to_play), "draw_how_to_play should be callable")
+        self.assertTrue(callable(self.game.draw_grid_lines), "draw_grid_lines should be callable")
+
+
 if __name__ == '__main__':
     # Run the tests
     unittest.main(verbosity=2)
