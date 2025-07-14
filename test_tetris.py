@@ -5,7 +5,8 @@ import os
 # Add the current directory to the path so we can import main
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from main import Tetris, PIECES, GRID_WIDTH, GRID_HEIGHT
+from main import Tetris, PIECES, TetrisError
+from config import GRID_WIDTH, GRID_HEIGHT
 
 class TestTetrisPieces(unittest.TestCase):
     """Test Tetris piece definitions and rotations"""
