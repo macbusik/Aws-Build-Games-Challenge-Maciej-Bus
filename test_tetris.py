@@ -6,7 +6,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from main import Tetris, PIECES, TetrisError
-from config import GRID_WIDTH, GRID_HEIGHT
+from config import GRID_WIDTH, GRID_HEIGHT, Scoring
 
 class TestTetrisPieces(unittest.TestCase):
     """Test Tetris piece definitions and rotations"""
@@ -212,6 +212,82 @@ class TestTetrisPieceShapes(unittest.TestCase):
         
         self.assertNotEqual(s_piece_first, z_piece_first, 
                            "S-piece and Z-piece should be different")
+
+
+class TestTetrisScoringSystem(unittest.TestCase):
+    """Test the NES Tetris scoring system"""
+    
+    def setUp(self):
+        self.game = Tetris()
+    
+    def test_initial_scoring_state(self):
+        """Test initial scoring values"""
+        self.assertEqual(self.game.score, 0)
+        self.assertEqual(self.game.level, 0)
+        self.assertEqual(self.game.lines_cleared, 0)
+        self.assertEqual(self.game.total_pieces, 0)
+    
+    def test_single_line_scoring(self):
+        """Test scoring for single line clear"""
+        initial_score = self.game.score
+        self.game.add_score_for_lines(1)
+        expected_score = initial_score + (Scoring.SINGLE * (self.game.level + 1))
+        self.assertEqual(self.game.score, expected_score)
+    
+    def test_tetris_scoring(self):
+        """Test scoring for Tetris (4 lines)"""
+        initial_score = self.game.score
+        self.game.add_score_for_lines(4)
+        expected_score = initial_score + (Scoring.TETRIS * (self.game.level + 1))
+        self.assertEqual(self.game.score, expected_score)
+    
+    def test_level_progression(self):
+        """Test level increases with lines cleared"""
+        # Clear 10 lines to reach level 1
+        self.game.lines_cleared = 10
+        self.game.update_level()
+        self.assertEqual(self.game.level, 1)
+        
+        # Clear 20 lines to reach level 2
+        self.game.lines_cleared = 20
+        self.game.update_level()
+        self.assertEqual(self.game.level, 2)
+    
+    def test_soft_drop_scoring(self):
+        """Test soft drop awards points"""
+        initial_score = self.game.score
+        # Simulate soft drop
+        if self.game.valid_move(self.game.current_piece, self.game.piece_x, self.game.piece_y + 1):
+            self.game.drop()
+            self.assertEqual(self.game.score, initial_score + Scoring.SOFT_DROP)
+    
+    def test_fall_speed_changes_with_level(self):
+        """Test that fall speed decreases with level"""
+        level_0_speed = self.game.get_fall_speed()
+        
+        self.game.level = 5
+        level_5_speed = self.game.get_fall_speed()
+        
+        # Higher level should have faster speed (lower ms value)
+        self.assertLess(level_5_speed, level_0_speed)
+    
+    def test_scoring_reset(self):
+        """Test that scoring resets properly"""
+        # Set some values
+        self.game.score = 1000
+        self.game.level = 5
+        self.game.lines_cleared = 25
+        self.game.total_pieces = 10
+        
+        # Reset game
+        self.game.reset_game()
+        
+        # Check all scoring values are reset
+        self.assertEqual(self.game.score, 0)
+        self.assertEqual(self.game.level, 0)
+        self.assertEqual(self.game.lines_cleared, 0)
+        self.assertEqual(self.game.total_pieces, 0)
+
 
 if __name__ == '__main__':
     # Run the tests

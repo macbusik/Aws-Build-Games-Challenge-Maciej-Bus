@@ -3,7 +3,7 @@ Configuration constants for Tetris game
 """
 
 # Display settings
-WINDOW_WIDTH = 400
+WINDOW_WIDTH = 550  # Increased to accommodate score display
 WINDOW_HEIGHT = 600
 BLOCK_SIZE = 30
 
@@ -19,6 +19,30 @@ SPAWN_Y = 0
 # Frame rate
 FPS = 60
 
+# Scoring system (NES Tetris compatible)
+class Scoring:
+    # Line clear points (multiplied by level + 1)
+    SINGLE = 40      # 1 line
+    DOUBLE = 100     # 2 lines  
+    TRIPLE = 300     # 3 lines
+    TETRIS = 1200    # 4 lines (Tetris!)
+    
+    # Soft drop points
+    SOFT_DROP = 1    # Per cell dropped
+    
+    # Level progression
+    LINES_PER_LEVEL = 10
+    MAX_LEVEL = 29
+    
+    # Speed progression (fall speed in milliseconds)
+    LEVEL_SPEEDS = {
+        0: 800, 1: 717, 2: 633, 3: 550, 4: 467, 5: 383,
+        6: 300, 7:217, 8: 133, 9: 100, 10: 83, 11: 83,
+        12: 83, 13: 67, 14: 67, 15: 67, 16: 50, 17: 50,
+        18: 50, 19: 33, 20: 33, 21: 33, 22: 33, 23: 33,
+        24: 33, 25: 33, 26: 33, 27: 33, 28: 33, 29: 17
+    }
+
 # Colors (RGB tuples)
 class Colors:
     BLACK = (0, 0, 0)
@@ -32,6 +56,7 @@ class Colors:
     CYAN = (0, 255, 255)
     GRAY = (128, 128, 128)
     DARK_GRAY = (64, 64, 64)
+    LIGHT_GRAY = (192, 192, 192)
 
 # Game title
 GAME_TITLE = "Tetris - AWS Build Games Challenge"
