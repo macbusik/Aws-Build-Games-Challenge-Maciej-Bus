@@ -53,6 +53,17 @@ This project includes comprehensive unit tests covering:
 - Boundary checking
 - Line clearing functionality
 
+## 📚 Documentation
+
+Comprehensive project documentation is available in the [`docs/`](docs/) directory:
+
+- **[Development Guide](docs/DEV_BRANCH_README.md)** - Development workflow and guidelines
+- **[Code Review](docs/CODE_REVIEW.md)** - Technical analysis and quality assessment  
+- **[Improvement Plan](docs/IMPROVEMENT_PLAN.md)** - Implementation roadmap and examples
+- **[Review Summary](docs/REVIEW_SUMMARY.md)** - Executive summary of code quality
+
+Release notes are maintained in their respective release branches.
+
 ## Repository Status
 
 🔒 **Private during development phase** - Will be made public upon completion.
