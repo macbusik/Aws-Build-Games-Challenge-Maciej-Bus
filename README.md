@@ -67,4 +67,4 @@ Release notes are maintained in their respective release branches.
 
 ## Repository Status
 
-🔒 **Private during development phase** - Will be made public upon completion.
+🌟 **Public Release v0.1.1** - Ready for AWS Build Games Challenge submission!
