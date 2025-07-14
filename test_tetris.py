@@ -5,7 +5,8 @@ import os
 # Add the current directory to the path so we can import main
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from main import Tetris, PIECES, TetrisError
+from main import Tetris, TetrisError
+from pieces import PIECES, get_piece_count, get_piece_name, validate_piece_definitions
 from config import GRID_WIDTH, GRID_HEIGHT, Scoring
 
 class TestTetrisPieces(unittest.TestCase):
@@ -287,6 +288,58 @@ class TestTetrisScoringSystem(unittest.TestCase):
         self.assertEqual(self.game.level, 0)
         self.assertEqual(self.game.lines_cleared, 0)
         self.assertEqual(self.game.total_pieces, 0)
+
+
+class TestPiecesModule(unittest.TestCase):
+    """Test the pieces module functionality"""
+    
+    def test_pieces_import(self):
+        """Test that pieces can be imported successfully"""
+        self.assertEqual(len(PIECES), 7, "Should have 7 piece types")
+        self.assertIsInstance(PIECES, list, "PIECES should be a list")
+    
+    def test_get_piece_count(self):
+        """Test get_piece_count function"""
+        self.assertEqual(get_piece_count(), 7, "Should return 7 pieces")
+    
+    def test_get_piece_name(self):
+        """Test get_piece_name function"""
+        self.assertEqual(get_piece_name(0), "T-piece")
+        self.assertEqual(get_piece_name(1), "O-piece")
+        self.assertEqual(get_piece_name(2), "L-piece")
+        self.assertEqual(get_piece_name(3), "I-piece")
+        self.assertEqual(get_piece_name(4), "S-piece")
+        self.assertEqual(get_piece_name(5), "Z-piece")
+        self.assertEqual(get_piece_name(6), "J-piece")
+        self.assertTrue(get_piece_name(99).startswith("Unknown piece"))
+    
+    def test_piece_validation(self):
+        """Test that piece definitions are valid"""
+        errors = validate_piece_definitions()
+        self.assertEqual(len(errors), 0, f"Piece validation errors: {errors}")
+    
+    def test_pieces_structure(self):
+        """Test that all pieces have correct structure"""
+        for i, piece in enumerate(PIECES):
+            with self.subTest(piece_type=i, piece_name=get_piece_name(i)):
+                self.assertIsInstance(piece, list, f"Piece {i} should be a list")
+                self.assertGreater(len(piece), 0, f"Piece {i} should have rotations")
+                
+                for j, rotation in enumerate(piece):
+                    self.assertIsInstance(rotation, list, f"Piece {i} rotation {j} should be a list")
+                    self.assertEqual(len(rotation), 5, f"Piece {i} rotation {j} should have 5 rows")
+                    
+                    for k, row in enumerate(rotation):
+                        self.assertIsInstance(row, str, f"Piece {i} rotation {j} row {k} should be a string")
+                        self.assertEqual(len(row), 5, f"Piece {i} rotation {j} row {k} should have 5 characters")
+    
+    def test_pieces_have_four_blocks(self):
+        """Test that all piece rotations have exactly 4 blocks"""
+        for i, piece in enumerate(PIECES):
+            for j, rotation in enumerate(piece):
+                block_count = sum(row.count('#') for row in rotation)
+                self.assertEqual(block_count, 4, 
+                               f"{get_piece_name(i)} rotation {j} should have 4 blocks, found {block_count}")
 
 
 if __name__ == '__main__':

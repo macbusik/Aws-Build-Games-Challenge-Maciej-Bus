@@ -3,6 +3,7 @@ import random
 import sys
 import logging
 from config import *
+from pieces import PIECES, get_piece_count, get_piece_name
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -26,126 +27,6 @@ except pygame.error as e:
     pygame.quit()
     sys.exit(1)
 
-# Tetris pieces with all rotations - Fixed definitions
-PIECES = [
-    # T-piece
-    [
-        ['.....',
-         '..#..',
-         '.###.',
-         '.....',
-         '.....'],
-        ['.....',
-         '..#..',
-         '..##.',
-         '..#..',
-         '.....'],
-        ['.....',
-         '.....',
-         '.###.',
-         '..#..',
-         '.....'],
-        ['.....',
-         '..#..',
-         '.##..',
-         '..#..',
-         '.....']
-    ],
-    # O-piece (square)
-    [
-        ['.....',
-         '.....',
-         '.##..',
-         '.##..',
-         '.....']
-    ],
-    # L-piece (CORRECTLY Fixed)
-    [
-        ['.....',
-         '..#..',
-         '..#..',
-         '..##.',
-         '.....'],
-        ['.....',
-         '.....',
-         '.###.',
-         '.#...',
-         '.....'],
-        ['.....',
-         '.##..',
-         '..#..',
-         '..#..',
-         '.....'],
-        ['.....',
-         '.....',
-         '...#.',
-         '.###.',
-         '.....']
-    ],
-    # I-piece (Fixed)
-    [
-        ['.....',
-         '.....',
-         '####.',
-         '.....',
-         '.....'],
-        ['.....',
-         '..#..',
-         '..#..',
-         '..#..',
-         '..#..']
-    ],
-    # S-piece
-    [
-        ['.....',
-         '.....',
-         '.##..',
-         '##...',
-         '.....'],
-        ['.....',
-         '.#...',
-         '.##..',
-         '..#..',
-         '.....']
-    ],
-    # Z-piece
-    [
-        ['.....',
-         '.....',
-         '##...',
-         '.##..',
-         '.....'],
-        ['.....',
-         '..#..',
-         '.##..',
-         '.#...',
-         '.....']
-    ],
-    # J-piece (CORRECTLY Fixed)
-    [
-        ['.....',
-         '.#...',
-         '.#...',
-         '.##..',
-         '.....'],
-        ['.....',
-         '.#...',
-         '.###.',
-         '.....',
-         '.....'],
-        ['.....',
-         '.##..',
-         '.#...',
-         '.#...',
-         '.....'],
-        ['.....',
-         '.....',
-         '.###.',
-         '.#...',
-         '.....']
-    ]
-]
-
 class TetrisError(Exception):
     """Base exception for Tetris game errors"""
     pass
@@ -158,7 +39,7 @@ class Tetris:
     def __init__(self):
         try:
             self.grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-            self.current_piece_type = random.randint(0, len(PIECES) - 1)
+            self.current_piece_type = random.randint(0, get_piece_count() - 1)
             self.current_rotation = 0
             self.current_piece = PIECES[self.current_piece_type][self.current_rotation]
             self.piece_x, self.piece_y = SPAWN_X, SPAWN_Y
@@ -183,9 +64,10 @@ class Tetris:
     def new_piece(self):
         """Generate a new random piece"""
         try:
-            self.current_piece_type = random.randint(0, len(PIECES) - 1)
+            self.current_piece_type = random.randint(0, get_piece_count() - 1)
             self.current_rotation = 0
             self.current_piece = PIECES[self.current_piece_type][self.current_rotation]
+            logger.debug(f"Generated new {get_piece_name(self.current_piece_type)}")
         except (IndexError, ValueError) as e:
             logger.error(f"Failed to generate new piece: {e}")
             # Fallback to T-piece if there's an error
@@ -229,7 +111,7 @@ class Tetris:
         """Properly reset game state without reinitializing the object"""
         try:
             self.grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-            self.current_piece_type = random.randint(0, len(PIECES) - 1)
+            self.current_piece_type = random.randint(0, get_piece_count() - 1)
             self.current_rotation = 0
             self.current_piece = PIECES[self.current_piece_type][self.current_rotation]
             self.piece_x, self.piece_y = SPAWN_X, SPAWN_Y
