@@ -3,7 +3,7 @@ import random
 import sys
 import logging
 from config import *
-from pieces import PIECES, get_piece_count, get_piece_name
+from pieces import PIECES, get_piece_count, get_piece_name, get_piece_color, get_piece_border_color
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -93,7 +93,8 @@ class Tetris:
             for px, cell in enumerate(row):
                 if cell == '#':
                     if self.piece_y + py >= 0:  # Only place if within bounds
-                        self.grid[self.piece_y + py][self.piece_x + px] = 1
+                        # Store piece type + 1 (so 0 remains empty, 1-7 are piece types)
+                        self.grid[self.piece_y + py][self.piece_x + px] = self.current_piece_type + 1
         
         # Track pieces placed
         self.total_pieces += 1
@@ -235,29 +236,47 @@ class Tetris:
             self.score += Scoring.SOFT_DROP
     
     def draw(self, screen):
-        """Draw the game state to screen with scoring information"""
+        """Draw the game state to screen with NES Tetris colors"""
         try:
-            # Draw grid
+            # Fill background with dark color
+            screen.fill(PieceColors.GRID_BACKGROUND)
+            
+            # Draw placed pieces on grid with their colors
             for y, row in enumerate(self.grid):
                 for x, cell in enumerate(row):
                     if cell:
-                        pygame.draw.rect(screen, Colors.WHITE, 
+                        # cell contains piece_type + 1, so subtract 1 to get actual piece type
+                        piece_type = cell - 1
+                        piece_color = get_piece_color(piece_type)
+                        border_color = get_piece_border_color(piece_type)
+                        
+                        # Draw filled block
+                        pygame.draw.rect(screen, piece_color, 
                                        (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-                        pygame.draw.rect(screen, Colors.GRAY, 
-                                       (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 1)
+                        # Draw border for 3D effect
+                        pygame.draw.rect(screen, border_color, 
+                                       (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 2)
             
-            # Draw current piece
+            # Draw current falling piece with its color
+            current_color = get_piece_color(self.current_piece_type)
+            current_border = get_piece_border_color(self.current_piece_type)
+            
             for py, row in enumerate(self.current_piece):
                 for px, cell in enumerate(row):
                     if cell == '#':
-                        pygame.draw.rect(screen, Colors.RED, 
+                        # Draw filled block
+                        pygame.draw.rect(screen, current_color, 
                                        ((self.piece_x + px) * BLOCK_SIZE, 
                                         (self.piece_y + py) * BLOCK_SIZE, 
                                         BLOCK_SIZE, BLOCK_SIZE))
-                        pygame.draw.rect(screen, Colors.DARK_GRAY, 
+                        # Draw border for 3D effect
+                        pygame.draw.rect(screen, current_border, 
                                        ((self.piece_x + px) * BLOCK_SIZE, 
                                         (self.piece_y + py) * BLOCK_SIZE, 
-                                        BLOCK_SIZE, BLOCK_SIZE), 1)
+                                        BLOCK_SIZE, BLOCK_SIZE), 2)
+            
+            # Draw grid lines for better visibility
+            self.draw_grid_lines(screen)
             
             # Draw scoring information
             self.draw_score_info(screen)
@@ -265,6 +284,23 @@ class Tetris:
         except Exception as e:
             logger.error(f"Error in draw method: {e}")
             # Continue execution, don't crash the game
+    
+    def draw_grid_lines(self, screen):
+        """Draw subtle grid lines for better piece visibility"""
+        try:
+            # Draw vertical lines
+            for x in range(GRID_WIDTH + 1):
+                pygame.draw.line(screen, PieceColors.GRID_BORDER,
+                               (x * BLOCK_SIZE, 0),
+                               (x * BLOCK_SIZE, GRID_HEIGHT * BLOCK_SIZE), 1)
+            
+            # Draw horizontal lines
+            for y in range(GRID_HEIGHT + 1):
+                pygame.draw.line(screen, PieceColors.GRID_BORDER,
+                               (0, y * BLOCK_SIZE),
+                               (GRID_WIDTH * BLOCK_SIZE, y * BLOCK_SIZE), 1)
+        except Exception as e:
+            logger.error(f"Error drawing grid lines: {e}")
     
     def draw_score_info(self, screen):
         """Draw score, level, and lines information"""

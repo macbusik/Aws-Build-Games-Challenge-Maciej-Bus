@@ -6,8 +6,9 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from main import Tetris, TetrisError
-from pieces import PIECES, get_piece_count, get_piece_name, validate_piece_definitions
-from config import GRID_WIDTH, GRID_HEIGHT, Scoring
+from pieces import (PIECES, get_piece_count, get_piece_name, get_piece_color, 
+                   get_piece_border_color, validate_piece_definitions, PIECE_COLORS, PIECE_BORDER_COLORS)
+from config import GRID_WIDTH, GRID_HEIGHT, Scoring, PieceColors
 
 class TestTetrisPieces(unittest.TestCase):
     """Test Tetris piece definitions and rotations"""
@@ -340,6 +341,51 @@ class TestPiecesModule(unittest.TestCase):
                 block_count = sum(row.count('#') for row in rotation)
                 self.assertEqual(block_count, 4, 
                                f"{get_piece_name(i)} rotation {j} should have 4 blocks, found {block_count}")
+    
+    def test_piece_colors(self):
+        """Test that all pieces have colors defined"""
+        for i in range(get_piece_count()):
+            with self.subTest(piece_type=i, piece_name=get_piece_name(i)):
+                # Test main color
+                color = get_piece_color(i)
+                self.assertIsInstance(color, tuple, f"Color for {get_piece_name(i)} should be a tuple")
+                self.assertEqual(len(color), 3, f"Color for {get_piece_name(i)} should have 3 RGB values")
+                
+                # Test border color
+                border_color = get_piece_border_color(i)
+                self.assertIsInstance(border_color, tuple, f"Border color for {get_piece_name(i)} should be a tuple")
+                self.assertEqual(len(border_color), 3, f"Border color for {get_piece_name(i)} should have 3 RGB values")
+                
+                # Test RGB values are in valid range
+                for value in color:
+                    self.assertGreaterEqual(value, 0, "RGB values should be >= 0")
+                    self.assertLessEqual(value, 255, "RGB values should be <= 255")
+                
+                for value in border_color:
+                    self.assertGreaterEqual(value, 0, "RGB values should be >= 0")
+                    self.assertLessEqual(value, 255, "RGB values should be <= 255")
+    
+    def test_nes_tetris_colors(self):
+        """Test that NES Tetris colors are correctly assigned"""
+        # Test specific NES color assignments
+        self.assertEqual(get_piece_color(0), PieceColors.T_PIECE)  # T-piece = Purple
+        self.assertEqual(get_piece_color(1), PieceColors.O_PIECE)  # O-piece = Yellow
+        self.assertEqual(get_piece_color(2), PieceColors.L_PIECE)  # L-piece = Orange
+        self.assertEqual(get_piece_color(3), PieceColors.I_PIECE)  # I-piece = Cyan
+        self.assertEqual(get_piece_color(4), PieceColors.S_PIECE)  # S-piece = Green
+        self.assertEqual(get_piece_color(5), PieceColors.Z_PIECE)  # Z-piece = Red
+        self.assertEqual(get_piece_color(6), PieceColors.J_PIECE)  # J-piece = Blue
+    
+    def test_color_mappings_complete(self):
+        """Test that color mappings exist for all pieces"""
+        piece_count = get_piece_count()
+        self.assertEqual(len(PIECE_COLORS), piece_count, "Should have colors for all pieces")
+        self.assertEqual(len(PIECE_BORDER_COLORS), piece_count, "Should have border colors for all pieces")
+        
+        # Test all piece types have color mappings
+        for i in range(piece_count):
+            self.assertIn(i, PIECE_COLORS, f"Missing color mapping for piece {i}")
+            self.assertIn(i, PIECE_BORDER_COLORS, f"Missing border color mapping for piece {i}")
 
 
 if __name__ == '__main__':
