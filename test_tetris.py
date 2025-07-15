@@ -41,15 +41,18 @@ class TestTetrisPieces(unittest.TestCase):
         self.assertIn('.##..', rotation[3])
     
     def test_l_piece_rotations(self):
-        """Test L-piece has 4 rotations and correct shape"""
+        """Test L-piece has 4 rotations and correct SRS shape"""
         l_piece = PIECES[2]  # L-piece
         self.assertEqual(len(l_piece), 4, "L-piece should have 4 rotations")
         
-        # Test first rotation (vertical L)
+        # Test first rotation (horizontal L with top-right hook - SRS spawn state)
         first_rotation = l_piece[0]
-        self.assertIn('..#..', first_rotation[1])
-        self.assertIn('..#..', first_rotation[2])
-        self.assertIn('..##.', first_rotation[3])
+        self.assertIn('...#.', first_rotation[1])  # Top-right hook
+        self.assertIn('.###.', first_rotation[2])  # Horizontal base
+        
+        # Verify it's different from J-piece
+        j_piece = PIECES[6]
+        self.assertNotEqual(l_piece, j_piece, "L-piece should be different from J-piece")
     
     def test_i_piece_rotations(self):
         """Test I-piece has 2 rotations and correct shape"""
@@ -66,18 +69,23 @@ class TestTetrisPieces(unittest.TestCase):
         self.assertEqual(block_count, 4, "I-piece should have 4 blocks")
     
     def test_j_piece_rotations(self):
-        """Test J-piece has 4 rotations and is different from L-piece"""
+        """Test J-piece has 4 rotations and correct SRS shape"""
         j_piece = PIECES[6]  # J-piece
         l_piece = PIECES[2]  # L-piece
         
         self.assertEqual(len(j_piece), 4, "J-piece should have 4 rotations")
         self.assertNotEqual(j_piece, l_piece, "J-piece should be different from L-piece")
         
-        # Test first rotation (vertical J - mirror of L)
+        # Test first rotation (horizontal J with top-left hook - SRS spawn state)
         first_rotation = j_piece[0]
-        self.assertIn('.#...', first_rotation[1])
-        self.assertIn('.#...', first_rotation[2])
-        self.assertIn('.##..', first_rotation[3])
+        self.assertIn('.#...', first_rotation[1])  # Top-left hook
+        self.assertIn('.###.', first_rotation[2])  # Horizontal base
+        
+        # Verify J and L are mirror images in spawn state
+        # J has hook on left, L has hook on right
+        self.assertTrue(any('.#...' in row for row in first_rotation), "J-piece should have left hook")
+        l_first = l_piece[0]
+        self.assertTrue(any('...#.' in row for row in l_first), "L-piece should have right hook")
 
 class TestTetrisGameLogic(unittest.TestCase):
     """Test Tetris game logic"""

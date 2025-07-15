@@ -41,27 +41,31 @@ PIECES = [
          '.##..',
          '.....']
     ],
-    # L-piece (CORRECTLY Fixed)
+    # L-piece (SRS Standard - Fixed spawn orientation)
     [
+        # State 0 (Spawn) - Horizontal with top-right hook
+        ['.....',
+         '...#.',
+         '.###.',
+         '.....',
+         '.....'],
+        # State R (90° clockwise) - Vertical with bottom-left hook
         ['.....',
          '..#..',
          '..#..',
          '..##.',
          '.....'],
+        # State 2 (180°) - Horizontal with bottom-left hook
         ['.....',
          '.....',
          '.###.',
          '.#...',
          '.....'],
+        # State L (270° clockwise) - Vertical with top-right hook
         ['.....',
          '.##..',
          '..#..',
          '..#..',
-         '.....'],
-        ['.....',
-         '.....',
-         '...#.',
-         '.###.',
          '.....']
     ],
     # I-piece (Fixed)
@@ -103,27 +107,31 @@ PIECES = [
          '.#...',
          '.....']
     ],
-    # J-piece (CORRECTLY Fixed)
+    # J-piece (SRS Standard - Fixed spawn orientation)
     [
-        ['.....',
-         '.#...',
-         '.#...',
-         '.##..',
-         '.....'],
+        # State 0 (Spawn) - Horizontal with top-left hook
         ['.....',
          '.#...',
          '.###.',
          '.....',
          '.....'],
+        # State R (90° clockwise) - Vertical with bottom-right hook
         ['.....',
-         '.##..',
-         '.#...',
-         '.#...',
+         '..##.',
+         '..#..',
+         '..#..',
          '.....'],
+        # State 2 (180°) - Horizontal with bottom-right hook
         ['.....',
          '.....',
          '.###.',
-         '.#...',
+         '...#.',
+         '.....'],
+        # State L (270° clockwise) - Vertical with top-left hook
+        ['.....',
+         '..#..',
+         '..#..',
+         '.##..',
          '.....']
     ]
 ]
