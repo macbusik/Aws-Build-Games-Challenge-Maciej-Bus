@@ -4,7 +4,7 @@ Configuration constants for Tetris game
 
 # Display settings
 WINDOW_WIDTH = 550  # Increased to accommodate score display
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 750  # Increased to accommodate how-to-play instructions
 BLOCK_SIZE = 30
 
 # Grid settings

@@ -381,22 +381,22 @@ class Tetris:
             logger.error(f"Error drawing score info: {e}")
     
     def draw_how_to_play(self, screen):
-        """Draw how to play instructions on the left side"""
+        """Draw how to play instructions below the game grid"""
         try:
-            # Position how-to-play info on the left side
+            # Position how-to-play info below the game grid
             help_x = 10
-            help_y = GRID_HEIGHT * BLOCK_SIZE + 20
+            help_y = GRID_HEIGHT * BLOCK_SIZE + 10  # Reduced margin
             
             # Title
             title_text = self.font.render("HOW TO PLAY", True, Colors.YELLOW)
             screen.blit(title_text, (help_x, help_y))
             
             # Controls section
-            controls_y = help_y + 30
+            controls_y = help_y + 25  # Reduced spacing
             controls_title = self.small_font.render("CONTROLS:", True, Colors.WHITE)
             screen.blit(controls_title, (help_x, controls_y))
             
-            # Control instructions
+            # Control instructions (more compact)
             controls = [
                 "← → Move pieces",
                 "↑ Rotate pieces", 
@@ -406,14 +406,15 @@ class Tetris:
             
             for i, control in enumerate(controls):
                 control_text = self.small_font.render(control, True, Colors.LIGHT_GRAY)
-                screen.blit(control_text, (help_x, controls_y + 20 + (i * 16)))
+                screen.blit(control_text, (help_x, controls_y + 15 + (i * 14)))  # Tighter spacing
             
-            # Scoring section
-            scoring_y = controls_y + 20 + (len(controls) * 16) + 10
+            # Scoring section (positioned to the right of controls)
+            scoring_x = help_x + 200  # Position to the right
+            scoring_y = controls_y
             scoring_title = self.small_font.render("SCORING:", True, Colors.WHITE)
-            screen.blit(scoring_title, (help_x, scoring_y))
+            screen.blit(scoring_title, (scoring_x, scoring_y))
             
-            # Scoring instructions
+            # Scoring instructions (more compact)
             scoring = [
                 "1 line = 40 × (level+1)",
                 "2 lines = 100 × (level+1)",
@@ -424,7 +425,7 @@ class Tetris:
             
             for i, score in enumerate(scoring):
                 score_text = self.small_font.render(score, True, Colors.LIGHT_GRAY)
-                screen.blit(score_text, (help_x, scoring_y + 20 + (i * 16)))
+                screen.blit(score_text, (scoring_x, scoring_y + 15 + (i * 14)))  # Tighter spacing
                 
         except Exception as e:
             logger.error(f"Error drawing how to play: {e}")
