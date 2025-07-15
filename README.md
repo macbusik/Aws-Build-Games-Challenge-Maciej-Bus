@@ -15,7 +15,7 @@ This project is part of the AWS Build Games Challenge, where developers build cl
 ### **Core Gameplay:**
 - Complete Tetris implementation with all 7 standard pieces (T, O, L, I, S, Z, J)
 - Authentic NES Tetris colors and 3D block effects
-- Proper piece rotations with wall-kick support
+- SRS-compliant piece rotations (Super Rotation System)
 - Line clearing mechanics with authentic scoring
 - Collision detection and boundary checking
 - Smooth 60 FPS gameplay with keyboard controls
@@ -34,6 +34,26 @@ This project is part of the AWS Build Games Challenge, where developers build cl
 - Commercial-quality game presentation
 - Intuitive information layout and enhanced readability
 
+## 🚀 **Quick Start**
+
+### **Run the Game:**
+```bash
+# Simple execution
+python3 main.py
+
+# Or use the launcher script
+./scripts/run_tetris.sh
+```
+
+### **Run Tests:**
+```bash
+# Run all tests
+python3 run_tests.py
+
+# Or run specific test file
+python3 -m pytest tests/
+```
+
 ## Controls
 
 - **Left/Right arrows**: Move pieces horizontally
@@ -41,6 +61,30 @@ This project is part of the AWS Build Games Challenge, where developers build cl
 - **Up arrow**: Rotate pieces
 - **Spacebar**: Hard drop (instant drop + 2 points per cell)
 - **Close window**: Quit game
+
+## 📁 **Project Structure**
+
+```
+Aws-Build-Games-Challenge-Maciej-Bus/
+├── src/                    # Core game source code
+│   ├── main.py            # Main game logic
+│   ├── ui_components.py   # Modular UI components
+│   ├── pieces.py          # Tetris pieces and SRS rotations
+│   └── config.py          # Game configuration
+├── tests/                 # Unit tests
+│   └── test_tetris.py     # Comprehensive test suite
+├── scripts/               # Utility scripts
+│   ├── run_tetris.sh      # Game launcher
+│   └── setup_environment.sh # Environment setup
+├── docs/                  # Documentation
+│   ├── user-guide/        # User documentation
+│   ├── technical/         # Technical documentation
+│   └── release-notes/     # Release notes
+├── assets/                # Game assets (future)
+├── main.py               # Entry point
+├── run_tests.py          # Test runner
+└── requirements.txt      # Dependencies
+```
 
 ## Setup
 
@@ -51,38 +95,45 @@ pip install -r requirements.txt
 
 2. Run the game:
 ```bash
-python main.py
+python3 main.py
 ```
 
 3. Run tests:
 ```bash
-python test_tetris.py
+python3 run_tests.py
 ```
 
 ## Requirements
 
 - Python 3.7+
-- pygame 2.5.2
+- pygame 2.5.2+
 
 ## Development
 
 This project includes comprehensive unit tests covering:
-- Piece shape validation
+- Piece shape validation and SRS compliance
 - Game logic testing
 - Movement and rotation mechanics
 - Boundary checking
 - Line clearing functionality
+- UI component validation
 
 ## 📚 Documentation
 
 Comprehensive project documentation is available in the [`docs/`](docs/) directory:
 
+### **User Documentation:**
+- **[Quick Start Guide](docs/user-guide/QUICK_START.md)** - How to run and play the game
+
+### **Technical Documentation:**
+- **[SRS Compliance](docs/technical/SRS_COMPLIANCE.md)** - Super Rotation System implementation
 - **[Development Guide](docs/DEV_BRANCH_README.md)** - Development workflow and guidelines
 - **[Code Review](docs/CODE_REVIEW.md)** - Technical analysis and quality assessment  
 - **[Improvement Plan](docs/IMPROVEMENT_PLAN.md)** - Implementation roadmap and examples
 - **[Review Summary](docs/REVIEW_SUMMARY.md)** - Executive summary of code quality
 
-Release notes are maintained in their respective release branches.
+### **Release Documentation:**
+- **[Release Notes v0.2.0](docs/release-notes/RELEASE_NOTES_v0.2.0.md)** - Latest release details
 
 ## Repository Status
 

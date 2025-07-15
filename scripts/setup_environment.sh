@@ -33,8 +33,9 @@ if command -v python3 &> /dev/null; then
     cat > /tmp/tetris_aliases.sh << EOF
 # Tetris Game Aliases - Added by setup script
 alias tetris='cd "$TETRIS_DIR" && python3 main.py'
-alias tetris-test='cd "$TETRIS_DIR" && python3 test_tetris.py'
+alias tetris-test='cd "$TETRIS_DIR" && python3 run_tests.py'
 alias tetris-dir='cd "$TETRIS_DIR"'
+alias tetris-run='cd "$TETRIS_DIR" && ./scripts/run_tetris.sh'
 
 # Python alias for convenience (if python command doesn't exist)
 if ! command -v python &> /dev/null; then

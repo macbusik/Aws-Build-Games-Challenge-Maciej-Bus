@@ -11,7 +11,14 @@ echo ""
 # Check if we're in the right directory
 if [ ! -f "main.py" ]; then
     echo "❌ Error: main.py not found in current directory"
-    echo "Please run this script from the Tetris game directory"
+    echo "Please run this script from the project root directory"
+    exit 1
+fi
+
+# Check if src directory exists
+if [ ! -d "src" ]; then
+    echo "❌ Error: src directory not found"
+    echo "Please run this script from the project root directory"
     exit 1
 fi
 
@@ -27,7 +34,7 @@ echo "   Controls: Arrow keys + Spacebar for hard drop"
 echo "   Close window to quit"
 echo ""
 
-# Run the game
+# Run the game from project root
 python3 main.py
 
 echo ""
