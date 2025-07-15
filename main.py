@@ -396,12 +396,12 @@ class Tetris:
             controls_title = self.small_font.render("CONTROLS:", True, Colors.WHITE)
             screen.blit(controls_title, (help_x, controls_y))
             
-            # Control instructions (more compact)
+            # Control instructions with clear key names
             controls = [
-                "← → Move pieces",
-                "↑ Rotate pieces", 
-                "↓ Soft drop (+1pt/cell)",
-                "SPACE Hard drop (+2pt/cell)",
+                "[LEFT] [RIGHT] - Move pieces",
+                "[UP] - Rotate pieces", 
+                "[DOWN] - Soft drop (+1pt/cell)",
+                "[SPACE] - Hard drop (+2pt/cell)",
             ]
             
             for i, control in enumerate(controls):
@@ -409,17 +409,17 @@ class Tetris:
                 screen.blit(control_text, (help_x, controls_y + 15 + (i * 14)))  # Tighter spacing
             
             # Scoring section (positioned to the right of controls)
-            scoring_x = help_x + 200  # Position to the right
+            scoring_x = help_x + 240  # Adjusted position for longer text
             scoring_y = controls_y
             scoring_title = self.small_font.render("SCORING:", True, Colors.WHITE)
             screen.blit(scoring_title, (scoring_x, scoring_y))
             
             # Scoring instructions (more compact)
             scoring = [
-                "1 line = 40 × (level+1)",
-                "2 lines = 100 × (level+1)",
-                "3 lines = 300 × (level+1)", 
-                "4 lines = 1200 × (level+1) TETRIS!",
+                "1 line = 40 x (level+1)",
+                "2 lines = 100 x (level+1)",
+                "3 lines = 300 x (level+1)", 
+                "4 lines = 1200 x (level+1) TETRIS!",
                 "Level up every 10 lines"
             ]
             
