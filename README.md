@@ -1,19 +1,38 @@
 # AWS Build Games Challenge - Maciej Bus
 
-A Python pygame Tetris implementation for the [AWS Build Games Challenge](https://builder.aws.com/content/2y6egGcPAGQs8EwtQUM9KAONojz/build-games-challenge-build-classics-with-amazon-q-developer-cli).
+A professional Python pygame Tetris implementation for the [AWS Build Games Challenge](https://builder.aws.com/content/2y6egGcPAGQs8EwtQUM9KAONojz/build-games-challenge-build-classics-with-amazon-q-developer-cli).
+
+## 🌟 **Version 0.2.0 - Modular UI Architecture**
+
+This release introduces a revolutionary modular UI architecture that transforms the game into a professional, commercial-quality experience with clean component separation and enhanced visual design.
 
 ## About the Challenge
 
 This project is part of the AWS Build Games Challenge, where developers build classic games using Amazon Q Developer CLI assistance. The challenge focuses on recreating timeless games while leveraging AI-powered development tools.
 
-## Game Features
+## 🎮 **Game Features**
 
+### **Core Gameplay:**
 - Complete Tetris implementation with all 7 standard pieces (T, O, L, I, S, Z, J)
+- Authentic NES Tetris colors and 3D block effects
 - Proper piece rotations with wall-kick support
-- Line clearing mechanics
+- Line clearing mechanics with authentic scoring
 - Collision detection and boundary checking
-- Smooth gameplay with keyboard controls
-- Visual grid with borders
+- Smooth 60 FPS gameplay with keyboard controls
+
+### **🏗️ Professional UI Architecture (v0.2.0):**
+- **GameField Component**: Clean game area with contained grid lines (300×600px)
+- **ScoreBoard Component**: Professional scoring and statistics display
+- **HowToPlayPanel Component**: Always-visible player guidance
+- **GameUI Coordinator**: Centralized component management
+- **Visual Excellence**: Grid lines only in game field, no window-wide clutter
+
+### **Enhanced User Experience:**
+- Crystal-clear visual hierarchy with component boundaries
+- Professional styling with subtle backgrounds
+- Focused gameplay area without distractions
+- Commercial-quality game presentation
+- Intuitive information layout and enhanced readability
 
 ## Controls
 
@@ -67,4 +86,4 @@ Release notes are maintained in their respective release branches.
 
 ## Repository Status
 
-🔒 **Private during development phase** - Will be made public upon completion.
+🌟 **Version 0.2.0 Released** - Professional modular UI architecture with component-based design!
