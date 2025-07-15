@@ -4,6 +4,7 @@ import sys
 import logging
 from config import *
 from pieces import PIECES, get_piece_count, get_piece_name, get_piece_color, get_piece_border_color
+from ui_components import GameUI
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -51,7 +52,10 @@ class Tetris:
             self.lines_cleared = 0
             self.total_pieces = 0
             
-            # Initialize pygame font for score display
+            # Initialize modular UI components
+            self.ui = GameUI()
+            
+            # Keep fonts for backward compatibility (some methods might still use them)
             pygame.font.init()
             self.font = pygame.font.Font(None, 24)
             self.big_font = pygame.font.Font(None, 36)
@@ -272,164 +276,29 @@ class Tetris:
             self.drop()
     
     def draw(self, screen):
-        """Draw the game state to screen with NES Tetris colors"""
+        """Draw the game state using modular UI components"""
         try:
-            # Fill background with dark color
-            screen.fill(PieceColors.GRID_BACKGROUND)
+            # Prepare game state for UI components
+            game_state = {
+                'grid': self.grid,
+                'current_piece': self.current_piece,
+                'piece_x': self.piece_x,
+                'piece_y': self.piece_y,
+                'current_piece_type': self.current_piece_type,
+                'score': self.score,
+                'level': self.level,
+                'lines_cleared': self.lines_cleared,
+                'total_pieces': self.total_pieces,
+                'fall_speed': self.get_fall_speed()
+            }
             
-            # Draw placed pieces on grid with their colors
-            for y, row in enumerate(self.grid):
-                for x, cell in enumerate(row):
-                    if cell:
-                        # cell contains piece_type + 1, so subtract 1 to get actual piece type
-                        piece_type = cell - 1
-                        piece_color = get_piece_color(piece_type)
-                        border_color = get_piece_border_color(piece_type)
-                        
-                        # Draw filled block
-                        pygame.draw.rect(screen, piece_color, 
-                                       (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
-                        # Draw border for 3D effect
-                        pygame.draw.rect(screen, border_color, 
-                                       (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 2)
-            
-            # Draw current falling piece with its color
-            current_color = get_piece_color(self.current_piece_type)
-            current_border = get_piece_border_color(self.current_piece_type)
-            
-            for py, row in enumerate(self.current_piece):
-                for px, cell in enumerate(row):
-                    if cell == '#':
-                        # Draw filled block
-                        pygame.draw.rect(screen, current_color, 
-                                       ((self.piece_x + px) * BLOCK_SIZE, 
-                                        (self.piece_y + py) * BLOCK_SIZE, 
-                                        BLOCK_SIZE, BLOCK_SIZE))
-                        # Draw border for 3D effect
-                        pygame.draw.rect(screen, current_border, 
-                                       ((self.piece_x + px) * BLOCK_SIZE, 
-                                        (self.piece_y + py) * BLOCK_SIZE, 
-                                        BLOCK_SIZE, BLOCK_SIZE), 2)
-            
-            # Draw grid lines for better visibility
-            self.draw_grid_lines(screen)
-            
-            # Draw scoring information
-            self.draw_score_info(screen)
-            
-            # Draw how to play instructions
-            self.draw_how_to_play(screen)
+            # Draw complete UI using modular components
+            self.ui.draw(screen, game_state)
             
         except Exception as e:
             logger.error(f"Error in draw method: {e}")
             # Continue execution, don't crash the game
     
-    def draw_grid_lines(self, screen):
-        """Draw subtle grid lines for better piece visibility"""
-        try:
-            # Draw vertical lines
-            for x in range(GRID_WIDTH + 1):
-                pygame.draw.line(screen, PieceColors.GRID_BORDER,
-                               (x * BLOCK_SIZE, 0),
-                               (x * BLOCK_SIZE, GRID_HEIGHT * BLOCK_SIZE), 1)
-            
-            # Draw horizontal lines
-            for y in range(GRID_HEIGHT + 1):
-                pygame.draw.line(screen, PieceColors.GRID_BORDER,
-                               (0, y * BLOCK_SIZE),
-                               (GRID_WIDTH * BLOCK_SIZE, y * BLOCK_SIZE), 1)
-        except Exception as e:
-            logger.error(f"Error drawing grid lines: {e}")
-    
-    def draw_score_info(self, screen):
-        """Draw score, level, and lines information"""
-        try:
-            # Position score info to the right of the game grid
-            info_x = GRID_WIDTH * BLOCK_SIZE + 10
-            
-            # Score
-            score_text = self.font.render(f"SCORE", True, Colors.WHITE)
-            score_value = self.big_font.render(f"{self.score:08d}", True, Colors.YELLOW)
-            screen.blit(score_text, (info_x, 50))
-            screen.blit(score_value, (info_x, 70))
-            
-            # Level
-            level_text = self.font.render(f"LEVEL", True, Colors.WHITE)
-            level_value = self.big_font.render(f"{self.level}", True, Colors.CYAN)
-            screen.blit(level_text, (info_x, 120))
-            screen.blit(level_value, (info_x, 140))
-            
-            # Lines
-            lines_text = self.font.render(f"LINES", True, Colors.WHITE)
-            lines_value = self.big_font.render(f"{self.lines_cleared}", True, Colors.GREEN)
-            screen.blit(lines_text, (info_x, 190))
-            screen.blit(lines_value, (info_x, 210))
-            
-            # Pieces (bonus info)
-            pieces_text = self.font.render(f"PIECES", True, Colors.WHITE)
-            pieces_value = self.font.render(f"{self.total_pieces}", True, Colors.LIGHT_GRAY)
-            screen.blit(pieces_text, (info_x, 260))
-            screen.blit(pieces_value, (info_x, 280))
-            
-            # Speed indicator
-            speed_text = self.font.render(f"SPEED", True, Colors.WHITE)
-            speed_value = self.font.render(f"{self.get_fall_speed()}ms", True, Colors.LIGHT_GRAY)
-            screen.blit(speed_text, (info_x, 320))
-            screen.blit(speed_value, (info_x, 340))
-            
-        except Exception as e:
-            logger.error(f"Error drawing score info: {e}")
-    
-    def draw_how_to_play(self, screen):
-        """Draw how to play instructions below the game grid"""
-        try:
-            # Position how-to-play info below the game grid
-            help_x = 10
-            help_y = GRID_HEIGHT * BLOCK_SIZE + 10  # Reduced margin
-            
-            # Title
-            title_text = self.font.render("HOW TO PLAY", True, Colors.YELLOW)
-            screen.blit(title_text, (help_x, help_y))
-            
-            # Controls section
-            controls_y = help_y + 25  # Reduced spacing
-            controls_title = self.small_font.render("CONTROLS:", True, Colors.WHITE)
-            screen.blit(controls_title, (help_x, controls_y))
-            
-            # Control instructions with clear key names
-            controls = [
-                "[LEFT] [RIGHT] - Move pieces",
-                "[UP] - Rotate pieces", 
-                "[DOWN] - Soft drop (+1pt/cell)",
-                "[SPACE] - Hard drop (+2pt/cell)",
-            ]
-            
-            for i, control in enumerate(controls):
-                control_text = self.small_font.render(control, True, Colors.LIGHT_GRAY)
-                screen.blit(control_text, (help_x, controls_y + 15 + (i * 14)))  # Tighter spacing
-            
-            # Scoring section (positioned to the right of controls)
-            scoring_x = help_x + 240  # Adjusted position for longer text
-            scoring_y = controls_y
-            scoring_title = self.small_font.render("SCORING:", True, Colors.WHITE)
-            screen.blit(scoring_title, (scoring_x, scoring_y))
-            
-            # Scoring instructions (more compact)
-            scoring = [
-                "1 line = 40 x (level+1)",
-                "2 lines = 100 x (level+1)",
-                "3 lines = 300 x (level+1)", 
-                "4 lines = 1200 x (level+1) TETRIS!",
-                "Level up every 10 lines"
-            ]
-            
-            for i, score in enumerate(scoring):
-                score_text = self.small_font.render(score, True, Colors.LIGHT_GRAY)
-                screen.blit(score_text, (scoring_x, scoring_y + 15 + (i * 14)))  # Tighter spacing
-                
-        except Exception as e:
-            logger.error(f"Error drawing how to play: {e}")
-
 def main():
     """Main game loop with error handling"""
     try:
@@ -463,17 +332,8 @@ def main():
                 # Update game state
                 game.update(dt)
                 
-                # Draw everything
-                screen.fill(Colors.BLACK)
+                # Draw everything using modular UI
                 game.draw(screen)
-                
-                # Draw grid lines for better visibility
-                for x in range(GRID_WIDTH + 1):
-                    pygame.draw.line(screen, Colors.DARK_GRAY, 
-                                   (x * BLOCK_SIZE, 0), (x * BLOCK_SIZE, WINDOW_HEIGHT))
-                for y in range(GRID_HEIGHT + 1):
-                    pygame.draw.line(screen, Colors.DARK_GRAY, 
-                                   (0, y * BLOCK_SIZE), (WINDOW_WIDTH, y * BLOCK_SIZE))
                 
                 pygame.display.flip()
                 

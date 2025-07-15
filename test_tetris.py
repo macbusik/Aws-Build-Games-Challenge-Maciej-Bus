@@ -423,17 +423,24 @@ class TestTetrisUI(unittest.TestCase):
         self.assertIsNotNone(self.game.small_font, "Small font should be initialized")
     
     def test_draw_methods_exist(self):
-        """Test that all draw methods exist and are callable"""
+        """Test that draw method exists and UI components are initialized"""
         self.assertTrue(hasattr(self.game, 'draw'), "draw method should exist")
-        self.assertTrue(hasattr(self.game, 'draw_score_info'), "draw_score_info method should exist")
-        self.assertTrue(hasattr(self.game, 'draw_how_to_play'), "draw_how_to_play method should exist")
-        self.assertTrue(hasattr(self.game, 'draw_grid_lines'), "draw_grid_lines method should exist")
+        self.assertTrue(hasattr(self.game, 'ui'), "ui component should exist")
         
-        # Test that methods are callable
+        # Test that main draw method is callable
         self.assertTrue(callable(self.game.draw), "draw should be callable")
-        self.assertTrue(callable(self.game.draw_score_info), "draw_score_info should be callable")
-        self.assertTrue(callable(self.game.draw_how_to_play), "draw_how_to_play should be callable")
-        self.assertTrue(callable(self.game.draw_grid_lines), "draw_grid_lines should be callable")
+        
+        # Test that UI components exist
+        self.assertIsNotNone(self.game.ui, "UI should be initialized")
+        self.assertTrue(hasattr(self.game.ui, 'game_field'), "game_field component should exist")
+        self.assertTrue(hasattr(self.game.ui, 'score_board'), "score_board component should exist")
+        self.assertTrue(hasattr(self.game.ui, 'how_to_play'), "how_to_play component should exist")
+        
+        # Test that UI components are callable
+        self.assertTrue(callable(self.game.ui.draw), "UI draw should be callable")
+        self.assertTrue(callable(self.game.ui.game_field.draw), "game_field draw should be callable")
+        self.assertTrue(callable(self.game.ui.score_board.draw), "score_board draw should be callable")
+        self.assertTrue(callable(self.game.ui.how_to_play.draw), "how_to_play draw should be callable")
     
     def test_window_dimensions(self):
         """Test that window dimensions accommodate all UI elements"""
